@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Url Shortener</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container mainDiv">
+        <h1 class="text-center mt-5 mb-5 title">URL Shortener</h1>
+        <form>
+            <div class="form-group">
+              <input type="text" class="form-control mt-5 mb-3" placeholder="Enter an URL to shorten it!" id="inp" required/>
+              <button class="btn btn-primary btn-block" id="sub">Shorten URL</button>
+            </div>
+        </form>
+        <h3 id="out" class="text-center "></h3>
+        <div id="result"></div>
+        <h3 id="err" class="text-center"></h3>
+    </div>
+    <script>
+        
+        let sub = document.getElementById('sub');
+        sub.addEventListener('click',(e)=>{
+            e.preventDefault();
+            let longUrl = document.getElementById('inp').value;
+            if(longUrl===''){
+                let res = document.getElementById('result');
+                res.innerHTML='';
+                res.classList.remove('result');
+                document.getElementById('out').innerHTML='';
+                document.getElementById('inp').value='';
+                document.getElementById('err').innerHTML='';
+                document.getElementById('err').innerHTML='Please Enter an URL to Shorten!';
+            }
+            else{
+                fetch('/api/url/shorten',{
+                method:"POST",
+                body:JSON.stringify({longUrl}),
+                headers: {
+                 'Content-Type': 'application/json'
+                },
+            }).then(data=>data.json())
+              .then(d=>{
+                    let res = document.getElementById('result');
+                    let out = document.getElementById('out');
+                    res.innerHTML=d;
+                    out.innerHTML='Your Shorten URL';
+                    res.classList.add("result");
+                    document.getElementById('inp').value='';
+                    document.getElementById('err').innerHTML='';
+            }).catch(err=>{console.log(err)})
+            }
+        })
+    </script>
+</body>
+</html>
